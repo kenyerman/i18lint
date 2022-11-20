@@ -11,8 +11,10 @@
     "build": "tsc -p .",
     "lint:fix": "eslint --fix ./src",
     "lint:check": "eslint ./src",
+    "lint:ci": "eslint",
     "prettier:fix": "prettier --write .",
     "prettier:check": "prettier --check .",
+    "prettier:ci": "prettier --check",
     "husky:init": "husky install"
   },
   "repository": {
