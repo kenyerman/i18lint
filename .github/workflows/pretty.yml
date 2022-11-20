@@ -1,9 +1,9 @@
-name: Check linter
+name: Check prettier
 on: [pull_request]
 
 jobs:
-  check-linter:
-    name: Check linter
+  check-prettier:
+    name: Check prettier
     runs-on: ubuntu-latest
 
     steps:
@@ -23,8 +23,9 @@ jobs:
         uses: tj-actions/changed-files@v34
         with:
           files: |
+            *.md
             src/**/*.ts
 
       - name: Lint
         if: steps.changed-files-specific.outputs.any_changed == 'true'
-        run: npm run lint:ci -- ${{ steps.changed-files.outputs.all_changed_files }}
+        run: npm run prettier:ci -- ${{ steps.changed-files.outputs.all_changed_files }}
