@@ -13,6 +13,17 @@ const getScopes = () => {
 module.exports = {
     extends: ['@commitlint/config-conventional'],
     rules: {
-        "scope-enum": getScopes
-    }
+        'scope-enum': getScopes,
+        'github-issue-reference': [2, 'always']
+    },
+    plugins: [
+        {
+            rules: {
+                'github-issue-reference': ({ subject }) => [
+                    !!subject.match(/\(#\d*\)$/gm)?.length,
+                    `Subject should end with a reference to a github issue id in the following format: (#123)`,
+                ]
+            },
+        },
+    ],
 };
