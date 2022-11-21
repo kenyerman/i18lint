@@ -1,6 +1,5 @@
 # ![i18lint](https://user-images.githubusercontent.com/20663815/203164266-8a0aa236-bdfa-448f-92f0-771186a82fad.png)
 
-
 This script lints your translation files and rewrites them in a way that keys are sorted.
 Compatible with `@ngx-translate`
 
