@@ -1,13 +1,16 @@
+name: Release
+
 on:
   push:
     branches:
-      - develop
-name: release-please
+      - master
+
 jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: google-github-actions/release-please-action@v3
+      - name: Run Release Please
+        uses: google-github-actions/release-please-action@v3
         id: release
         with:
           release-type: node
@@ -16,19 +19,23 @@ jobs:
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false}]'
           default-branch: master
 
-      # The logic below handles the npm publication:
-      - uses: actions/checkout@v2
-        # these if statements ensure that a publication only occurs when
-        # a new release is created:
+      - name: Checkout branch
         if: ${{ steps.release.outputs.release_created }}
-      - uses: actions/setup-node@v1
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/setup-node@v1
         with:
           node-version: 16
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
         if: ${{ steps.release.outputs.release_created }}
-      - run: npm ci
+        run: npm ci
+
+      - name: Publish package to npm
         if: ${{ steps.release.outputs.release_created }}
-      - run: npm publish
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-        if: ${{ steps.release.outputs.release_created }}
