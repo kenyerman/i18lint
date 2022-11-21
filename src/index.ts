@@ -10,18 +10,17 @@ import stringify from 'json-stable-stringify';
 import { languageCodes } from './language-codes.js';
 
 const argv = await yargs(hideBin(process.argv))
-  .scriptName("i18linter")
+  .scriptName('i18linter')
   .positional('dir', {
     type: 'string',
     description: 'The path to the translation files',
-    demandOption: true
+    demandOption: true,
   })
   .option('rewrite', {
     type: 'boolean',
     alias: 'r',
-    description: 'Rewrite the translation files with pretty printing and ordered keys'
-  })
-  .argv;
+    description: 'Rewrite the translation files with pretty printing and ordered keys',
+  }).argv;
 
 const rootDirectory = argv._[0] as string;
 const rewrite = argv.rewrite;
@@ -36,7 +35,7 @@ const main = (dir: string): void => {
   const names = fs.readdirSync(dir);
 
   if (!names?.length) {
-    console.error("Fatal: The given directory is empty.");
+    console.error('Fatal: The given directory is empty.');
     exit(1);
   }
 
@@ -91,7 +90,7 @@ const main = (dir: string): void => {
         }
 
         existingTranslationUnits.add(unit);
-      })
+      });
     });
 
     // all translation units must exist in all languages
@@ -112,7 +111,7 @@ const main = (dir: string): void => {
 
           filesToExclude.push(path);
         }
-      })
+      });
     });
 
     const unitTree: any = {};
@@ -142,7 +141,7 @@ const main = (dir: string): void => {
           console.error(`\tFile "${path}" cannot be parsed.`);
           filesToExclude.push(path);
         }
-      })
+      });
     });
 
     const usedKeys: Record<string, Set<string>> = {};
@@ -220,9 +219,9 @@ const main = (dir: string): void => {
             console.error(`\tTranslation unit "${path}" has "${k}" with badly formatted value.`);
             filesToExclude.push(path);
           }
-        })
-      })
-    })
+        });
+      });
+    });
 
     // check for missing keys
     let hasMissingKeys = false;
@@ -240,43 +239,36 @@ const main = (dir: string): void => {
           if (!keysInUnit.includes(key)) {
             if (!hasMissingKeys) {
               hasMissingKeys = true;
-              console.error("\nError: Found missing translations.");
+              console.error('\nError: Found missing translations.');
             }
 
             console.error(`\t Translation unit "${path}" misses the key: "${key}".`);
             filesToExclude.push(path);
           }
         });
-      })
+      });
     });
 
     if (rewrite) {
       usedLanguages.forEach(lang => {
         existingTranslationUnits.forEach(unit => {
           const path = join(dir, lang, unit);
-  
+
           if (filesToExclude.includes(path)) {
             return;
           }
 
           const data = unitTree[lang][unit];
           const pretty = stringify(data, {
-            space: indentationSize
+            space: indentationSize,
           });
 
           fs.writeFileSync(path, pretty);
-        })
+        });
       });
     }
 
-    if (
-      hasLanguageCodeError ||
-      hasBadFileError ||
-      missingUnit ||
-      wrongJsonError ||
-      badFormat ||
-      hasMissingKeys
-    ) {
+    if (hasLanguageCodeError || hasBadFileError || missingUnit || wrongJsonError || badFormat || hasMissingKeys) {
       exit(1);
     }
 
@@ -365,11 +357,11 @@ const main = (dir: string): void => {
       }
 
       const data = langTree[lang];
-      const checkLevel = (level: any, fullkey: string = "") => {
+      const checkLevel = (level: any, fullkey = '') => {
         Object.keys(level).forEach(k => {
           const namespacing = k.includes('.');
           const v = level[k];
-          const nesting = typeof v !== "string";
+          const nesting = typeof v !== 'string';
 
           // prefer nesting
           if (structureType === null) {
@@ -399,12 +391,12 @@ const main = (dir: string): void => {
 
             console.error(`\tFile "${path}" contains nested object on key ${fullkey}.${k} when namespacing is already in use.`);
           }
-        })
+        });
 
         Object.keys(level).forEach(k => {
           const v = level[k];
 
-          const newLevelKey = fullkey+'.'+k;
+          const newLevelKey = fullkey + '.' + k;
 
           if (typeof v === 'string') {
             usedKeys.add(newLevelKey);
@@ -421,9 +413,8 @@ const main = (dir: string): void => {
           if (typeof v === 'object') {
             checkLevel(v, newLevelKey);
           }
-
-        })
-      }
+        });
+      };
 
       checkLevel(data);
     });
@@ -446,7 +437,7 @@ const main = (dir: string): void => {
 
           console.error(`\tFile "${path}" misses translation for key ${key}.`);
         }
-      })
+      });
     });
 
     if (rewrite) {
@@ -459,28 +450,22 @@ const main = (dir: string): void => {
 
         const data = langTree[lang];
         const pretty = stringify(data, {
-          space: indentationSize
-        })
+          space: indentationSize,
+        });
 
         fs.writeFileSync(path, pretty);
-      })
+      });
     }
 
-    if (
-      hasBadFileError ||
-      hasLanguageCodeError ||
-      wrongJsonError ||
-      structureError ||
-      hasMissingKeys 
-    ) {
+    if (hasBadFileError || hasLanguageCodeError || wrongJsonError || structureError || hasMissingKeys) {
       exit(1);
     }
 
     exit(0);
   }
 
-  console.error("Fatal: Cannot understand translation files structuring.")
+  console.error('Fatal: Cannot understand translation files structuring.');
   exit(1);
-}
+};
 
 main(rootDirectory);
