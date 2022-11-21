@@ -11,7 +11,8 @@ jobs:
         id: release
         with:
           release-type: node
-          package-name: @kenyerman/i18lint
+          package-name: |
+            @kenyerman/i18lint
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false}]'
           default-branch: master
 
