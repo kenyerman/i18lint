@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out Git repository
+      - name: Checkout branch
         uses: actions/checkout@v2
 
       - name: Get changed files
@@ -17,16 +17,16 @@ jobs:
           files: |
             src/**/*.ts
 
-      - name: Set up Node.js
+      - name: Set up Node
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/setup-node@v1
         with:
           node-version: 16
 
-      - name: Install Node.js dependencies
+      - name: Install dependencies
         if: steps.changed-files.outputs.any_changed == 'true'
         run: npm ci
 
-      - name: Lint
+      - name: Check ESLint
         if: steps.changed-files.outputs.any_changed == 'true'
         run: npm run lint:ci -- ${{ steps.changed-files.outputs.all_changed_files }}

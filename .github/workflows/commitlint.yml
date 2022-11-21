@@ -1,11 +1,16 @@
-name: Lint Commit Messages
+name: Check commit messages
 on: [pull_request]
 
 jobs:
   commitlint:
+    name: Check commit messages
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout branch
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: wagoid/commitlint-github-action@v5
+
+      - name: Commit lint
+        uses: wagoid/commitlint-github-action@v5
