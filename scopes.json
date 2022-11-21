@@ -1,7 +1,7 @@
 {
-    "cli": "Arguments, Banner, Logging, Error format, Exit codes.",
-    "structuring": "Enforce structuring of translation files.",
-    "language-codes": "Enforce using language codes",
-    "nesting-namespacing": "Check of nesting or namespacing of translation files.",
-    "missing": "Check for missing translations."
+  "cli": "Arguments, Banner, Logging, Error format, Exit codes.",
+  "structuring": "Enforce structuring of translation files.",
+  "language-codes": "Enforce using language codes",
+  "nesting-namespacing": "Check of nesting or namespacing of translation files.",
+  "missing": "Check for missing translations."
 }

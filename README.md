@@ -4,7 +4,9 @@ This script lints your translation files and rewrites them in a way that keys ar
 Compatible with `@ngx-translate`
 
 ## Installation
+
 The script is npm available. You can install via:
+
 ```
 npm i @kenyerman/i18lint -g
 ```
@@ -12,11 +14,13 @@ npm i @kenyerman/i18lint -g
 ## Usage
 
 ### Simple example
+
 ```
 i18lint path/to/translations/root --rewrite
 ```
 
 ### Help output
+
 ```
 $ i18lint --help
 Positionals:
@@ -30,6 +34,7 @@ Options:
 ```
 
 ## Features (planned)
+
 - [x] Check directory structure
 - [x] Check files validity
 - [x] Enforce ISO 639-1 language codes

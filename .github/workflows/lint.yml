@@ -26,5 +26,5 @@ jobs:
             src/**/*.ts
 
       - name: Lint
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        if: steps.changed-files.outputs.any_changed == 'true'
         run: npm run lint:ci -- ${{ steps.changed-files.outputs.all_changed_files }}
