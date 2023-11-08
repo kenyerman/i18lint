@@ -27,15 +27,27 @@ jobs:
         if: ${{ steps.release.outputs.release_created }}
         uses: actions/setup-node@v1
         with:
-          node-version: 16
+          node-version: ${{ vars.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         if: ${{ steps.release.outputs.release_created }}
         run: npm ci
 
-      - name: Publish package to npm
+      - name: Build
+        id: build
         if: ${{ steps.release.outputs.release_created }}
+        run: npm run build
+
+      - name: 'Upload Artifact'
+        if: ${{ steps.release.outputs.release_created && steps.build.outputs.exit-code == 0 }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-${{steps.release.outputs.version}}
+          path: lib
+
+      - name: Publish package to npm
+        if: ${{ steps.release.outputs.release_created && steps.build.outputs.exit-code == 0 }}
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
