@@ -27,10 +27,14 @@ Positionals:
   dir  The path to the translation files                                [string]
 
 Options:
-      --help     Show help                                             [boolean]
-      --version  Show version number                                   [boolean]
-  -r, --rewrite  Rewrite the translation files with pretty printing and ordered
-                 keys                                                  [boolean]
+      --help         Show help                                         [boolean]
+      --version      Show version number                               [boolean]
+  -r, --rewrite      Rewrite the translation files with pretty printing and orde
+                     red keys                                          [boolean]
+  -i, --indent       Force indentation of written files. Default is 4 spaces.
+                                                                        [number]
+      --projectRoot  Root directory of the project. Default is the current worki
+                     ng directory.                                      [string]
 ```
 
 ## Features (planned)
