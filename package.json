@@ -46,6 +46,8 @@
     "typescript": "^4.9.3"
   },
   "dependencies": {
+    "editorconfig": "^2.0.0",
+    "glob": "^10.3.10",
     "json-stable-stringify": "^1.0.2",
     "yargs": "^17.6.2"
   },
