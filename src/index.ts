@@ -6,8 +6,10 @@ import { exit } from 'process';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import stringify from 'json-stable-stringify';
+import * as editorconfig from 'editorconfig';
 
 import { languageCodes } from './language-codes.js';
+import { detectProjectIndentation, getProjectIndentor } from './detect-indentation.js';
 
 const argv = await yargs(hideBin(process.argv))
   .scriptName('i18linter')
@@ -20,11 +22,40 @@ const argv = await yargs(hideBin(process.argv))
     type: 'boolean',
     alias: 'r',
     description: 'Rewrite the translation files with pretty printing and ordered keys',
+    requiresArg: false,
+  })
+  .option('indent', {
+    type: 'number',
+    alias: 'i',
+    description: 'Force indentation of written files. Default is 4 spaces.',
+    requiresArg: true,
+  })
+  .option('projectRoot', {
+    type: 'string',
+    description: 'Root directory of the project. Default is the current working directory.',
+    requiresArg: true,
   }).argv;
 
 const rootDirectory = argv._[0] as string;
-const rewrite = argv.rewrite;
-const indentationSize = 4;
+const detectedIndentation = argv.rewrite ? detectProjectIndentation(rootDirectory, argv.indent) : undefined;
+
+const indentationForPath = (path: string) => {
+  if (argv.indent) {
+    return argv.indent;
+  }
+
+  const config = editorconfig.parseSync(path, { root: argv.projectRoot });
+
+  if (Number.isFinite(config.indent_size)) {
+    return getProjectIndentor('space', config.indent_size as number);
+  }
+
+  if (config.indent_size === 'tab') {
+    return getProjectIndentor('tab', config.tab_width as number);
+  }
+
+  return getProjectIndentor(detectedIndentation?.char || 'space', detectedIndentation?.size || 4);
+};
 
 /**
  * Structuring can be:
@@ -249,7 +280,7 @@ const main = (dir: string): void => {
       });
     });
 
-    if (rewrite) {
+    if (argv.rewrite) {
       usedLanguages.forEach(lang => {
         existingTranslationUnits.forEach(unit => {
           const path = join(dir, lang, unit);
@@ -260,7 +291,7 @@ const main = (dir: string): void => {
 
           const data = unitTree[lang][unit];
           const pretty = stringify(data, {
-            space: indentationSize,
+            space: indentationForPath(path),
           });
 
           fs.writeFileSync(path, pretty);
@@ -440,7 +471,7 @@ const main = (dir: string): void => {
       });
     });
 
-    if (rewrite) {
+    if (argv.rewrite) {
       languages.forEach(lang => {
         const path = join(dir, lang);
 
@@ -450,7 +481,7 @@ const main = (dir: string): void => {
 
         const data = langTree[lang];
         const pretty = stringify(data, {
-          space: indentationSize,
+          space: indentationForPath(path),
         });
 
         fs.writeFileSync(path, pretty);
